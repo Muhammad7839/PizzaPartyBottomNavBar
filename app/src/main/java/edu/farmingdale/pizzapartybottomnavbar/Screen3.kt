@@ -26,36 +26,54 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-// ToDo 2: the slider should be able to change the text value of the screen
-
-// ToDo 3: Make the UI look better by adding a gradient background (vertical) and padding
-
 @Composable
 fun Screen3() {
     var sliderValue by remember { mutableStateOf(0.5f) }
     var chkd by remember { mutableStateOf(true) }
 
-
     val context = LocalContext.current
-    Column ( modifier = Modifier.padding(horizontal = 20.dp).fillMaxSize(),
+
+    // ToDo 3: Added gradient background (vertical) and extra padding for a better look
+    val gradientBrush = Brush.verticalGradient(
+        colors = listOf(Color(0xFFB3E5FC), Color(0xFF81D4FA), Color(0xFF4FC3F7))
+    )
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(gradientBrush)
+            .padding(horizontal = 20.dp, vertical = 30.dp),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally){
-        Slider(value = sliderValue, onValueChange = { sliderValue=it }, Modifier.fillMaxWidth()
-            , enabled = chkd)
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        // ToDo 2: Slider changes the text value on the screen
+        Slider(
+            value = sliderValue,
+            onValueChange = { sliderValue = it },
+            modifier = Modifier.fillMaxWidth(),
+            enabled = chkd
+        )
 
-        Text (fontSize = 20.sp, text = "Second Screen" )
+        // show slider value as text
+        Text(
+            fontSize = 20.sp,
+            text = "Slider Value: ${"%.2f".format(sliderValue)}"
+        )
 
-        Button(onClick = { val newInt = Intent(Intent.ACTION_VIEW)
-            newInt.setData(Uri.parse("tel:6314202000"))
-            context.startActivity(newInt) }) {
-            Text(fontSize = 20.sp, text ="Call me")
+        Button(
+            onClick = {
+                val newInt = Intent(Intent.ACTION_VIEW)
+                newInt.data = Uri.parse("tel:6314202000")
+                context.startActivity(newInt)
+            }
+        ) {
+            Text(fontSize = 20.sp, text = "Call me")
         }
 
-        Checkbox(checked = chkd, onCheckedChange = { chkd=it }, modifier = Modifier.padding(10.dp))
-
+        Checkbox(
+            checked = chkd,
+            onCheckedChange = { chkd = it },
+            modifier = Modifier.padding(10.dp)
+        )
     }
-
 }
-
-
-

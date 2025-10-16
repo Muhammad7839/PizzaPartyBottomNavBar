@@ -26,11 +26,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import kotlin.math.ceil
+import androidx.lifecycle.ViewModel   // ToDo 7: ViewModel base class
 
-// ToDo 6: Add another level of hunger that is Hungry that is in between Medium and Very hungry
-
-// ToDo 7: Using the ViewModel class, create a new ViewModel class called PizzaPartyViewModel as
-// a subclass of ViewModel. Add the following properties to the PizzaPartyViewModel - see Brightspace
+// ToDo 6: Added "Hungry" level between Medium and Very hungry
+// ToDo 7: Created PizzaPartyViewModel subclass of ViewModel with basic properties
 
 @Composable
 fun PizzaPartyScreen( modifier: Modifier = Modifier) {
@@ -54,7 +53,8 @@ fun PizzaPartyScreen( modifier: Modifier = Modifier) {
         )
         RadioGroup(
             labelText = "How hungry?",
-            radioOptions = listOf("Light", "Medium", "Very hungry"),
+            // ToDo 6 applied here: insert "Hungry" between Medium and Very hungry
+            radioOptions = listOf("Light", "Medium", "Hungry", "Very hungry"),
             selectedOption = hungerLevel,
             onSelected = { hungerLevel = it },
             modifier = modifier
@@ -65,15 +65,16 @@ fun PizzaPartyScreen( modifier: Modifier = Modifier) {
             modifier = modifier.padding(top = 16.dp, bottom = 16.dp)
         )
         Button(
-            onClick = {            totalPizzas = calculateNumPizzas(numPeopleInput.toInt(),
-                hungerLevel)
-
+            onClick = {
+                totalPizzas = calculateNumPizzas(
+                    numPeopleInput.toInt(),
+                    hungerLevel
+                )
             },
             modifier = modifier.fillMaxWidth()
         ) {
             Text("Calculate")
         }
-
     }
 }
 
@@ -84,7 +85,6 @@ fun NumberField(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-
     TextField(
         value = textInput,
         onValueChange = onValueChange,
@@ -133,18 +133,25 @@ fun RadioGroup(
     }
 }
 
-
 fun calculateNumPizzas(
     numPeople: Int,
     hungerLevel: String
 ): Int {
     val slicesPerPizza = 8
+    // ToDo 6 applied here: map "Hungry" between Medium and Very hungry
     val slicesPerPerson = when (hungerLevel) {
         "Light" -> 2
         "Medium" -> 3
-        else -> 5
+        "Hungry" -> 4
+        "Very hungry" -> 5
+        else -> 3
     }
-
     return ceil(numPeople * slicesPerPerson / slicesPerPizza.toDouble()).toInt()
 }
 
+// ToDo 7 applied here: simple ViewModel holding the same three properties
+class PizzaPartyViewModel : ViewModel() {
+    var totalPizzas by mutableIntStateOf(0)
+    var numPeopleInput by mutableStateOf("")
+    var hungerLevel by mutableStateOf("Medium")
+}
